@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+  #
+  # Server backend service
+  #
+  backend:
+    image: blackbox/backend:latest
+    networks:
+      - blackbox-network
+    ports:
+      - 9000:3000
+    environment:
+      HTTP_PORT: "3000"
+      # MONGODB Connection String:
+      MONGODB_URI: ""
+      # MQTT Broker URL:
+      MQTT_URL: ""
+      # MQTT Broker Benutzername:
+      MQTT_USERNAME: ""
+      # MQTT Broker Passwort
+      MQTT_PASSWORD: ""
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=blackbox-network"
+      - "traefik.http.services.backend.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.backend-ratelimit.ratelimit.average=60"
+      - "traefik.http.middlewares.backend-ratelimit.ratelimit.burst=5"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/confessional`)"
+      - "traefik.http.routers.backend.service=backend"
+      - "traefik.http.routers.backend.middlewares=backend-ratelimit@docker"
+
+  #
+  # UI
+  #
+  frontend:
+    image: blackbox/frontend:latest
+    networks:
+      - blackbox-network
+    ports:
+      - 9010:80
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=blackbox-network"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.frontend.service=frontend"
+
+  #
+  # Reverse proxy
+  #
+  traefik:
+    image: traefik:2.3.6
+    networks:
+      - blackbox-network
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    command:
+      - --entryPoints.web.address=:80
+      - --providers.docker=true
+      - --api.dashboard=true
+      - --api.insecure=true
+    ports:
+      - 80:80
+      - 8080:8080
+    restart: unless-stopped
+
+networks:
+  blackbox-network:

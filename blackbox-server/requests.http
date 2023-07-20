@@ -1,0 +1,10 @@
+GET http://localhost:3000/confessional
+
+###
+
+POST http://localhost:3000/confessional
+content-type: application/json
+
+{
+    "message": "I like turtles."
+}

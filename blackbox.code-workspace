@@ -1,0 +1,27 @@
+{
+	"folders": [
+		{
+			"path": "blackbox-server"
+		},
+		{
+			"path": "blackbox-ui"
+		},
+		{
+			"path": "blackbox-printer"
+		},
+		{
+			"path": "deployment"
+		}
+	],
+	"settings": {
+		"workbench.colorCustomizations": {
+			"sash.hoverBorder": "#1a1a1a",
+			"statusBar.background": "#000000",
+			"statusBar.foreground": "#e7e7e7",
+			"statusBarItem.hoverBackground": "#1a1a1a",
+			"statusBarItem.remoteBackground": "#000000",
+			"statusBarItem.remoteForeground": "#e7e7e7"
+		},
+		"peacock.color": "#000000"
+	}
+}

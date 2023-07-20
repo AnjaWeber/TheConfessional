@@ -1,0 +1,17 @@
+[Unit]
+Description=Blackbox Printer Service
+After=network.target
+
+[Service]
+WorkingDirectory=/home/box/black-box/printer-service
+ExecStart=/usr/bin/node dist/main
+Restart=on-failure
+User=box
+Environment="HTTP_PORT=3000"
+Environment="MQTT_URL="
+Environment="MQTT_USERNAME="
+Environment="MQTT_PASSWORD="
+Environment="PRINTER_NAME=EPSON_TM-T20"
+
+[Install]
+WantedBy=multi-user.target
